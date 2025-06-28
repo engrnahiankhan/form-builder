@@ -7,7 +7,11 @@ const SignupPage = () => {
     <div>
       <h1>Signup page</h1>
 
-      <button onClick={() => dispatch(setClick(true))}>Sign In</button>
+      <button
+        onClick={() => dispatch(setClick(true))}
+        className="py-2 px-4 bg-blue-500 text-white cursor-pointer">
+        Sign In
+      </button>
     </div>
   );
 };
