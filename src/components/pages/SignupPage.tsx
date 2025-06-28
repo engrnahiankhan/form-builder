@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { setClick } from "../../store/slices/inSlice";
+import { Button } from "../ui/button";
 
 const SignupPage = () => {
   const dispatch = useDispatch();
@@ -7,11 +8,9 @@ const SignupPage = () => {
     <div>
       <h1>Signup page</h1>
 
-      <button
-        onClick={() => dispatch(setClick(true))}
-        className="py-2 px-4 bg-blue-500 text-white cursor-pointer">
+      <Button variant="default" onClick={() => dispatch(setClick(true))}>
         Sign In
-      </button>
+      </Button>
     </div>
   );
 };

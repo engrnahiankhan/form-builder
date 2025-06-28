@@ -3,7 +3,7 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import PrivateLayout from "../components/layout/PrivateLayout";
 import SignupPage from "../components/pages/SignupPage";
-import HomePage from "../components/pages/HomePage";
+import Dashboard from "@/components/pages/dashboard/Dashboard";
 
 const Index = () => {
   const routes = createBrowserRouter([
@@ -17,7 +17,7 @@ const Index = () => {
       children: [
         {
           path: "/",
-          element: <HomePage />,
+          element: <Dashboard />,
         },
       ],
     },
