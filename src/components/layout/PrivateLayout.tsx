@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 const PrivateLayout = () => {
   return (
-    <main>
+    <main className="overflow-hidden">
       <Outlet />
     </main>
   );

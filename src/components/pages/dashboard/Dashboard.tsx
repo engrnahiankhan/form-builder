@@ -7,9 +7,13 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Dashboard page</h1>
+      <h1 className="text-2xl font-bold">Dashboard page</h1>
+      <h1 className="text-2xl font-bold">Dashboard page</h1>
 
-      <Button variant="destructive" onClick={() => dispatch(setClick(false))}>
+      <Button
+        variant="destructive"
+        size="lg"
+        onClick={() => dispatch(setClick(false))}>
         Sign Out
       </Button>
     </div>
