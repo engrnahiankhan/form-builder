@@ -23,6 +23,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   useSidebar,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -82,12 +83,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-4 px-1 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-          <div className="flex aspect-square size-10 items-center justify-center rounded bg-sidebar-primary text-sidebar-primary-foreground group-data-[collapsible=icon]:size-10">
+        <div className="flex items-center justify-between px-1.5 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 relative">
+          {/* BookPlus Icon - Always visible */}
+          <div className="flex aspect-square size-10 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground group-data-[collapsible=icon]:size-10">
             <BookPlus className="size-5 group-data-[collapsible=icon]:size-5" />
           </div>
-          <div className="grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="truncate font-semibold text-lg">Form Builder</span>
+
+          {/* SidebarTrigger - Right side when expanded, hover position when collapsed */}
+          <div className="group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:right-1 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:hover:opacity-100 group-data-[collapsible=icon]:transition-opacity group-data-[collapsible=icon]:duration-200">
+            <SidebarTrigger />
           </div>
         </div>
       </SidebarHeader>
