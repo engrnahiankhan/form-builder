@@ -46,6 +46,13 @@ const SignupPage = () => {
               <Input type="password" placeholder="Enter your strong password" />
             </div>
 
+            <Label>
+              Already have an account?{" "}
+              <span className="text-primary hover:underline cursor-pointer">
+                Signin
+              </span>
+            </Label>
+
             {/* Submit Button */}
             <Button
               className="w-full py-5"
