@@ -82,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-3 px-1 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+        <div className="flex items-center gap-4 px-1 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
           <div className="flex aspect-square size-10 items-center justify-center rounded bg-sidebar-primary text-sidebar-primary-foreground group-data-[collapsible=icon]:size-10">
             <BookPlus className="size-5 group-data-[collapsible=icon]:size-5" />
           </div>
