@@ -3,8 +3,9 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import PrivateLayout from "../components/layout/PrivateLayout";
 import SignupPage from "../components/pages/SignupPage";
-import Dashboard from "@/components/pages/dashboard/Dashboard";
+import Dashboard from "@/components/feature/common/dashboard/Dashboard";
 import SigninPage from "@/components/pages/SigninPage";
+import PublicErrorPage from "@/components/pages/PublicErrorPage";
 
 const Index = () => {
   const routes = createBrowserRouter([
@@ -21,6 +22,8 @@ const Index = () => {
           element: <Dashboard />,
         },
       ],
+
+      errorElement: <PublicErrorPage />,
     },
     {
       path: "/signup",

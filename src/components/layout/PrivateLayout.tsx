@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { Outlet } from "react-router-dom";
-import UserSettings from "./UserSettings";
+import UserSettings from "../feature/common/user-settings/UserSettings";
 
 const PrivateLayout = () => {
   return (
