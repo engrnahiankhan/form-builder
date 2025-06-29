@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useAppDispatch } from "@/hooks/storeHooks";
 import { setClick } from "@/store/slices/inSlice";
 
@@ -7,9 +8,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Dashboard page</h1>
-      <h1 className="text-2xl font-bold">Dashboard page</h1>
-
+      <Card className="min-h-[300px]"></Card>
       <Button
         variant="destructive"
         size="lg"
