@@ -2,7 +2,7 @@ import Index from "./router/Routes";
 
 function App() {
   return (
-    <div className="font-roboto">
+    <div className="font-inter">
       <Index />
     </div>
   );
