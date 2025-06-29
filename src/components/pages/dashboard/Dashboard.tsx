@@ -1,20 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useAppDispatch } from "@/hooks/storeHooks";
-import { setClick } from "@/store/slices/inSlice";
+import { Card, CardTitle } from "@/components/ui/card";
+import { Plus } from "lucide-react";
 
 const Dashboard = () => {
-  const dispatch = useAppDispatch();
-
   return (
-    <div>
-      <Card className="min-h-[300px]"></Card>
-      <Button
-        variant="destructive"
-        size="lg"
-        onClick={() => dispatch(setClick(false))}>
-        Sign Out
-      </Button>
+    <div className="space-y-4">
+      <Card className="min-h-[300px] bg-slate-100">
+        <CardTitle>Start a new form</CardTitle>
+
+        <div className="flex flex-col justify-center items-center">
+          <Button variant="outline" className="size-40">
+            <Plus className="size-20 text-destructive" />
+          </Button>
+          <span className="font-semibold mt-2 text-gray-700">Blank Form</span>
+        </div>
+      </Card>
+
+      <Card className="min-h-[300px]">
+        <CardTitle>Recent forms</CardTitle>
+      </Card>
     </div>
   );
 };
