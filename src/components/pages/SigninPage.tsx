@@ -1,10 +1,14 @@
+import { useDispatch } from "react-redux";
+import { setClick } from "../../store/slices/inSlice";
 import { Button } from "../ui/button";
 import { ArrowRight, Shield } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
 
-const SignupPage = () => {
+const SigninPage = () => {
+  const dispatch = useDispatch();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md relative z-10">
@@ -16,7 +20,7 @@ const SignupPage = () => {
               <Shield className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-              Sign Up Account
+              Sign In Account
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-sm">
               Join thousands of users managing their data efficiently
@@ -25,12 +29,6 @@ const SignupPage = () => {
 
           {/* Form */}
           <div className="space-y-6">
-            {/* Full Name Field */}
-            <div className="space-y-1.5">
-              <Label>Full Name</Label>
-              <Input type="text" placeholder="Enter your full name" />
-            </div>
-
             {/* Email Field */}
             <div className="space-y-1.5">
               <Label>Email Address</Label>
@@ -44,17 +42,19 @@ const SignupPage = () => {
             </div>
 
             <Label>
-              Already have an account?{" "}
+              Don't have an account?{" "}
               <Link
-                to="/signin"
+                to="/signup"
                 className="text-primary hover:underline cursor-pointer">
-                SignIn
+                SignUp
               </Link>
             </Label>
 
             {/* Submit Button */}
-            <Button className="w-full py-5">
-              <span>SignUp</span>
+            <Button
+              className="w-full py-5"
+              onClick={() => dispatch(setClick(true))}>
+              <span>SignIn</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
@@ -72,4 +72,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default SigninPage;

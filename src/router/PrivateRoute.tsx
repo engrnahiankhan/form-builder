@@ -8,7 +8,7 @@ type PrivateRouteProps = {
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const isClick = useAppSelector((state) => state.test.is_click);
-  return isClick ? children : <Navigate to="/signup" />;
+  return isClick ? children : <Navigate to="/signin" />;
 };
 
 export default PrivateRoute;
