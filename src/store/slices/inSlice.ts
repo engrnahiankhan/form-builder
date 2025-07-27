@@ -5,7 +5,7 @@ interface IsClickType {
 }
 
 const initialState: IsClickType = {
-  is_click: false,
+  is_click: true,
 };
 
 const inSlice = createSlice({
