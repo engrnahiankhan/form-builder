@@ -33,7 +33,7 @@ const navigationItems = [
   {
     title: "Create new",
     icon: SquarePlus,
-    url: "/create",
+    url: "/create-form",
   },
   {
     title: "Share",

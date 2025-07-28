@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
+import { updateFormAction } from "@/store/actions/formAction";
 import {
   handleFormDescription,
   handleFormTitle,
 } from "@/store/slices/formSlice";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const CreateForm = () => {
@@ -34,6 +34,20 @@ const CreateForm = () => {
     );
   };
 
+  useEffect(() => {
+    if (formDataById.data) {
+      dispatch(
+        updateFormAction({
+          id: formDataById.data.id,
+          formData: {
+            title: formDataById.data.title,
+            description: formDataById.data.description,
+          },
+        })
+      );
+    }
+  }, [formDataById.data, dispatch]);
+
   return (
     <Card className="p-4">
       <CardTitle>Create Form</CardTitle>
@@ -55,10 +69,6 @@ const CreateForm = () => {
           />
         </div>
       )}
-
-      <div className="flex items-center justify-end mt-4">
-        <Button variant="outline">Save</Button>
-      </div>
     </Card>
   );
 };

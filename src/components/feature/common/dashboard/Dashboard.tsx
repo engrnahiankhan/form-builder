@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import RecentForm from "./RecentForm";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Dashboard = () => {
 
       <Card className="min-h-[300px]">
         <CardTitle>Recent forms</CardTitle>
+        <RecentForm />
       </Card>
     </div>
   );
