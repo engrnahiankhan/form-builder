@@ -1,7 +1,8 @@
 // components/features/FormCreator.tsx
+import CLoader from "@/components/shared/CLoader";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { createFormAction } from "@/store/actions/formAction";
-import { Ban, Loader } from "lucide-react";
+import { Ban } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -41,10 +42,7 @@ const FormCreator = () => {
 
   return (
     <div className="min-h-dvh flex items-center justify-center">
-      <div className="flex items-center space-x-2">
-        <Loader className="animate-spin" />
-        <span>Loading...</span>
-      </div>
+      <CLoader />
     </div>
   );
 };
