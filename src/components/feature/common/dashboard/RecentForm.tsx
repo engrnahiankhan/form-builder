@@ -1,6 +1,6 @@
-import CLoader from "@/components/shared/CLoader";
 import CMessage from "@/components/shared/CMessage";
 import { Card } from "@/components/ui/card";
+import { LoaderOne } from "@/components/ui/loader";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { deleteFormAction } from "@/store/actions/formAction";
 import { Edit, FileText, Trash2 } from "lucide-react";
@@ -19,7 +19,7 @@ const RecentForm = () => {
   };
 
   if (data.length === 0 && isLoading) {
-    return <CLoader />;
+    return <LoaderOne />;
   }
 
   if (isError) {

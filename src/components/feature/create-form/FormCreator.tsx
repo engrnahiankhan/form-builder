@@ -1,4 +1,4 @@
-import CLoader from "@/components/shared/CLoader";
+import { LoaderOne } from "@/components/ui/loader";
 import { useAppDispatch } from "@/hooks/storeHooks";
 import { createFormAction } from "@/store/actions/formAction";
 import { Ban } from "lucide-react";
@@ -49,7 +49,7 @@ const FormCreator = () => {
 
   return (
     <div className="min-h-dvh flex items-center justify-center">
-      <CLoader />
+      <LoaderOne />
     </div>
   );
 };

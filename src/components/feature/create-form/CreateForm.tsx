@@ -1,8 +1,8 @@
-import CLoader from "@/components/shared/CLoader";
 import CMessage from "@/components/shared/CMessage";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { LoaderFive, LoaderOne } from "@/components/ui/loader";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { updateFormAction } from "@/store/actions/formAction";
 import {
@@ -52,7 +52,7 @@ const CreateForm = () => {
     (formsData.isLoading && formsData.data.length === 0) ||
     (data === null && isLoading)
   ) {
-    return <CLoader />;
+    return <LoaderOne />;
   }
 
   if (formsData.isError || isError) {
@@ -76,13 +76,7 @@ const CreateForm = () => {
         <CardTitle className="flex items-center justify-between">
           Create Form
           {updateForm.isLoading ? (
-            <CLoader
-              title="Saving..."
-              textColor="text-gray-600"
-              textSize="text-[12px]"
-              iconColor="text-green-600"
-              iconSize="w-4 h-4"
-            />
+            <LoaderFive text="Saving..." />
           ) : (
             updateForm.isError && (
               <CMessage message={updateForm.message || ""} />
