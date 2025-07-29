@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
+import { createSlice } from "@reduxjs/toolkit";
 import {
   createFormAction,
   deleteFormAction,
@@ -7,48 +6,17 @@ import {
   getFormByIdAction,
   updateFormAction,
 } from "../actions/formAction";
-import { FormDataType } from "@/config/type.config";
+import { InitialFormStateType } from "@/config/type.config";
 
-type FormAllDataType = {
-  isLoading: boolean;
-  isError: boolean;
-  message: string;
-  data: FormDataType[];
-};
-
-interface FormState {
-  allFormData: FormAllDataType;
-  formDataById: {
-    isLoading: boolean;
-    isError: boolean;
-    message: string;
-    data: FormDataType | null;
-  };
-  createForm: {
-    isLoading: boolean;
-    isError: boolean;
-    message: string;
-  };
-  updateForm: {
-    isLoading: boolean;
-    isError: boolean;
-    message: string;
-  };
-  deleteForm: {
-    isLoading: boolean;
-    isError: boolean;
-    message: string;
-  };
-}
-
-const initialState: FormState = {
-  allFormData: {
+const initialState: InitialFormStateType = {
+  formsData: {
     isError: false,
     isLoading: false,
     message: "",
+    newId: null,
     data: [],
   },
-  formDataById: {
+  singleFormData: {
     isError: false,
     isLoading: false,
     message: "",
@@ -75,44 +43,27 @@ const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
-    // Create a new blank form with unique ID
-    createBlankForm: {
-      reducer: (state, action: PayloadAction<{ id?: string }>) => {
-        const newForm: FormDataType = {
-          id: action.payload.id || uuidv4(),
-          title: "Untitled Form",
-          description: "",
-        };
-        state.allFormData.data.push(newForm);
-      },
-      prepare: (id?: string) => {
-        return { payload: { id } };
-      },
-    },
-
-    // Update form title by ID
-    handleFormTitle: (
-      state,
-      action: PayloadAction<{ id: string; title: string }>
-    ) => {
-      if (
-        state.formDataById.data &&
-        state.formDataById.data.id === action.payload.id
-      ) {
-        state.formDataById.data.title = action.payload.title;
+    setSingleFormData: (state, { payload }) => {
+      const foundForm = state.formsData.data.find(
+        (form) => form.id === payload
+      );
+      if (foundForm) {
+        state.singleFormData.data = foundForm;
+        state.singleFormData.message = "Single form set from list";
+        state.singleFormData.isError = false;
+      } else {
+        state.singleFormData.data = null;
+        state.singleFormData.message = "Form not found";
+        state.singleFormData.isError = true;
       }
     },
 
-    // Update form description by ID
-    handleFormDescription: (
-      state,
-      action: PayloadAction<{ id: string; description: string }>
-    ) => {
-      if (
-        state.formDataById.data &&
-        state.formDataById.data.id === action.payload.id
-      ) {
-        state.formDataById.data.description = action.payload.description;
+    changeFormValueAction: (state, { payload }) => {
+      const form = state.singleFormData.data;
+      if (form && form.id === payload.id) {
+        if (payload.title !== undefined) form.title = payload.title;
+        if (payload.description !== undefined)
+          form.description = payload.description;
       }
     },
   },
@@ -123,10 +74,20 @@ const formSlice = createSlice({
         state.createForm.isLoading = true;
         state.createForm.message = "";
       })
-      .addCase(createFormAction.fulfilled, (state) => {
+      .addCase(createFormAction.fulfilled, (state, { payload }) => {
+        console.log("check create payload:", payload);
+
         state.createForm.isLoading = false;
+        state.createForm.isError = false;
         state.createForm.message = "Form created successfully";
-        // state.allFormData.data = payload;
+
+        state.formsData.newId = payload.data.id;
+
+        if (Array.isArray(state.formsData.data)) {
+          state.formsData.data.unshift(payload.data);
+        } else {
+          state.formsData.data = [payload.data];
+        }
       })
       .addCase(createFormAction.rejected, (state, action) => {
         state.createForm.isLoading = false;
@@ -137,35 +98,39 @@ const formSlice = createSlice({
 
       // Get All form data
       .addCase(getAllFormDataAction.pending, (state) => {
-        state.allFormData.isLoading = true;
-        state.allFormData.message = "";
+        state.formsData.isLoading = true;
+        state.formsData.message = "";
       })
       .addCase(getAllFormDataAction.fulfilled, (state, { payload }) => {
-        state.allFormData.isLoading = false;
-        state.allFormData.message = "Forms fetched successfully";
-        state.allFormData.data = payload;
+        state.formsData.isLoading = false;
+        state.formsData.isError = false;
+        state.formsData.message = "Forms fetched successfully";
+
+        state.formsData.data = payload.data;
       })
       .addCase(getAllFormDataAction.rejected, (state, action) => {
-        state.allFormData.isLoading = false;
-        state.allFormData.isError = true;
-        state.allFormData.message =
+        state.formsData.isLoading = false;
+        state.formsData.isError = true;
+        state.formsData.message =
           action.error.message || "Failed to fetch forms";
       })
 
       // Get form data by id
       .addCase(getFormByIdAction.pending, (state) => {
-        state.formDataById.isLoading = true;
-        state.formDataById.message = "";
+        state.singleFormData.isLoading = true;
+        state.singleFormData.message = "";
       })
       .addCase(getFormByIdAction.fulfilled, (state, { payload }) => {
-        state.formDataById.isLoading = false;
-        state.formDataById.message = "Form fetched successfully";
-        state.formDataById.data = payload;
+        state.singleFormData.isLoading = false;
+        state.singleFormData.isError = false;
+        state.singleFormData.message = "Form fetched successfully";
+
+        state.singleFormData.data = payload;
       })
       .addCase(getFormByIdAction.rejected, (state, action) => {
-        state.formDataById.isLoading = false;
-        state.formDataById.isError = true;
-        state.formDataById.message =
+        state.singleFormData.isLoading = false;
+        state.singleFormData.isError = true;
+        state.singleFormData.message =
           action.error.message || "Failed to fetch form";
       })
 
@@ -176,9 +141,12 @@ const formSlice = createSlice({
       })
       .addCase(updateFormAction.fulfilled, (state) => {
         state.updateForm.isLoading = false;
+        state.updateForm.isError = false;
         state.updateForm.message = "Form updated successfully";
       })
       .addCase(updateFormAction.rejected, (state, action) => {
+        console.log("update log:", action);
+
         state.updateForm.isLoading = false;
         state.updateForm.isError = true;
         state.updateForm.message =
@@ -192,10 +160,12 @@ const formSlice = createSlice({
       })
       .addCase(deleteFormAction.fulfilled, (state, action) => {
         state.deleteForm.isLoading = false;
+        state.deleteForm.isError = false;
         state.deleteForm.message = "Form deleted successfully";
+
         const pathId = action.meta.arg;
-        state.allFormData.data = state.allFormData.data.filter(
-          (form) => form.id !== pathId
+        state.formsData.data = state.formsData.data.filter(
+          (form) => form.id !== Number(pathId)
         );
       })
       .addCase(deleteFormAction.rejected, (state, action) => {
@@ -207,7 +177,5 @@ const formSlice = createSlice({
   },
 });
 
-export const { createBlankForm, handleFormTitle, handleFormDescription } =
-  formSlice.actions;
-
+export const { changeFormValueAction, setSingleFormData } = formSlice.actions;
 export default formSlice.reducer;

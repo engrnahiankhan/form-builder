@@ -7,8 +7,10 @@ import {
 
 import { Outlet } from "react-router-dom";
 import UserSettings from "../feature/common/user-settings/UserSettings";
+import useFormsData from "@/hooks/useFormsData";
 
 const PrivateLayout = () => {
+  useFormsData();
   return (
     <SidebarProvider>
       <AppSidebar />

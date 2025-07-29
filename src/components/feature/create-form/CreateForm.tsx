@@ -6,76 +6,68 @@ import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { updateFormAction } from "@/store/actions/formAction";
 import {
-  handleFormDescription,
-  handleFormTitle,
+  changeFormValueAction,
+  setSingleFormData,
 } from "@/store/slices/formSlice";
-import { Eye, Loader2 } from "lucide-react";
-import { ChangeEvent, useEffect } from "react";
+
+import { Eye } from "lucide-react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const CreateForm = () => {
   const dispatch = useAppDispatch();
   const params = useParams();
-  const { formDataById, updateForm } = useAppSelector((state) => state.form);
-
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!params.id || !formDataById.data) return;
-    dispatch(
-      handleFormTitle({
-        id: params.id,
-        title: e.target.value,
-      })
-    );
-  };
-
-  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    if (!params.id || !formDataById.data) return;
-    dispatch(
-      handleFormDescription({
-        id: params.id,
-        description: e.target.value,
-      })
-    );
-  };
+  const paramsId = Number(params.id);
+  const {
+    formsData,
+    updateForm,
+    singleFormData: { data, isError, isLoading, message },
+  } = useAppSelector((state) => state.form);
 
   useEffect(() => {
-    if (formDataById.data) {
-      dispatch(
-        updateFormAction({
-          id: formDataById.data.id,
-          formData: {
-            title: formDataById.data.title,
-            description: formDataById.data.description,
-          },
-        })
-      );
+    if (paramsId && formsData.data.length) {
+      dispatch(setSingleFormData(paramsId));
     }
-  }, [formDataById.data, dispatch]);
+  }, [paramsId, formsData.data, dispatch]);
 
-  // Loading state - show loader when data is null and still loading
-  if (formDataById.isLoading && !formDataById.data) {
-    return (
-      <div className="min-h-dvh flex items-center justify-center">
-        <CLoader />
-      </div>
+  useEffect(() => {
+    if (data) {
+      dispatch(updateFormAction({ id: data.id, formData: data }));
+    }
+  }, [data, dispatch]);
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(changeFormValueAction({ id: paramsId, title: e.target.value }));
+  };
+
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    dispatch(
+      changeFormValueAction({ id: paramsId, description: e.target.value })
     );
+  };
+
+  if (
+    (formsData.isLoading && formsData.data.length === 0) ||
+    (data === null && isLoading)
+  ) {
+    return <CLoader />;
   }
 
-  // Error state - show error message if there's an error
-  if (formDataById.isError) {
+  if (formsData.isError || isError) {
     return (
       <CMessage
         variant="error"
         message={
-          formDataById.message || "Something went wrong, please try again later"
+          formsData.isError
+            ? `${formsData.message}`
+            : isError
+            ? `${message}`
+            : "Currently data not available"
         }
       />
     );
-  }
-
-  // If data is still not available after loading is complete
-  if (!formDataById.data) {
-    return <CMessage variant="info" message="No form data available" />;
   }
 
   return (
@@ -84,7 +76,13 @@ const CreateForm = () => {
         <CardTitle className="flex items-center justify-between">
           Create Form
           {updateForm.isLoading ? (
-            <Loader2 color="green" className="animate-spin" />
+            <CLoader
+              title="Saving..."
+              textColor="text-gray-600"
+              textSize="text-[12px]"
+              iconColor="text-green-600"
+              iconSize="w-4 h-4"
+            />
           ) : (
             updateForm.isError && (
               <CMessage message={updateForm.message || ""} />
@@ -97,20 +95,18 @@ const CreateForm = () => {
         </CardTitle>
       </Card>
       <Card className="p-4">
-        {formDataById.data && (
-          <div
-            key={formDataById.data.id}
-            className="flex flex-col space-y-2 mt-4">
+        {data && (
+          <div className="flex flex-col space-y-2 mt-4">
             <Input
-              value={formDataById.data.title}
-              placeholder="Form Title"
+              value={data.title}
               onChange={handleTitleChange}
+              placeholder="Form Title"
             />
             <textarea
-              value={formDataById.data.description}
+              value={data.description}
+              onChange={handleDescriptionChange}
               placeholder="Form Description"
               className="min-h-[100px] p-2 border rounded-md"
-              onChange={handleDescriptionChange}
             />
           </div>
         )}

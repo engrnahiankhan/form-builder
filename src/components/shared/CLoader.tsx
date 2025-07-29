@@ -9,7 +9,7 @@ const CLoader = ({
   textColor = "text-gray-700",
 }) => {
   return (
-    <div className={`flex items-center justify-center gap-3 ${className}`}>
+    <div className={`flex items-center justify-center gap-2 ${className}`}>
       <Loader2 className={`${iconSize} ${iconColor} animate-spin`} />
       <span className={`${textSize} ${textColor} font-medium`}>{title}</span>
     </div>

@@ -1,11 +1,17 @@
 import { baseUrl } from "@/config/api.config";
-import { FormDataType } from "@/config/type.config";
+import { Question } from "@/config/type.config";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+interface FormType {
+  title: string;
+  description?: string;
+  questions?: Question[];
+}
+
 export const createFormAction = createAsyncThunk(
   "form/createForm",
-  async (formData: FormDataType) => {
+  async (formData: FormType) => {
     const url = baseUrl + "/create";
     const res = await axios.post(url, formData);
     return res.data;
@@ -32,7 +38,7 @@ export const getFormByIdAction = createAsyncThunk(
 
 export const updateFormAction = createAsyncThunk(
   "form/updateForm",
-  async ({ id, formData }: { id: string; formData: Partial<FormDataType> }) => {
+  async ({ id, formData }: { id: number; formData: Partial<FormType> }) => {
     const url = baseUrl + `/update/${id}`;
     const res = await axios.put(url, formData);
     return res.data;
@@ -41,7 +47,7 @@ export const updateFormAction = createAsyncThunk(
 
 export const deleteFormAction = createAsyncThunk(
   "form/deleteForm",
-  async (id: string) => {
+  async (id: number) => {
     const url = baseUrl + `/delete/${id}`;
     const res = await axios.delete(url);
     return res.data;

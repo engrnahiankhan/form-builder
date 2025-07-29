@@ -2,32 +2,23 @@ import CLoader from "@/components/shared/CLoader";
 import CMessage from "@/components/shared/CMessage";
 import { Card } from "@/components/ui/card";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
-import {
-  deleteFormAction,
-  getAllFormDataAction,
-} from "@/store/actions/formAction";
+import { deleteFormAction } from "@/store/actions/formAction";
 import { Edit, FileText, Trash2 } from "lucide-react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const RecentForm = () => {
   const dispatch = useAppDispatch();
   const {
-    allFormData: { data, isError, isLoading, message },
-    formDataById: { data: singleData },
+    formsData: { data, isError, isLoading, message },
   } = useAppSelector((state) => state.form);
 
-  useEffect(() => {
-    dispatch(getAllFormDataAction());
-  }, [dispatch, singleData]);
-
-  const handleDeleteForm = (id: string) => {
+  const handleDeleteForm = (id: number) => {
     if (window.confirm("Are you sure you want to delete this form?")) {
       dispatch(deleteFormAction(id));
     }
   };
 
-  if (isLoading) {
+  if (data.length === 0 && isLoading) {
     return <CLoader />;
   }
 
