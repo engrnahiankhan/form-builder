@@ -7,6 +7,7 @@ import {
   updateFormAction,
 } from "../actions/formAction";
 import { InitialFormStateType } from "@/config/type.config";
+import { v4 as uuidv4 } from "uuid";
 
 const initialState: InitialFormStateType = {
   formsData: {
@@ -43,6 +44,7 @@ const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
+    // Set selected form data from list
     setSingleFormData: (state, { payload }) => {
       const foundForm = state.formsData.data.find(
         (form) => form.id === payload
@@ -58,7 +60,19 @@ const formSlice = createSlice({
       }
     },
 
-    changeFormValueAction: (state, { payload }) => {
+    // Update form title or description
+    changeFormValueAction: (
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          id: number;
+          title?: string;
+          description?: string;
+        };
+      }
+    ) => {
       const form = state.singleFormData.data;
       if (form && form.id === payload.id) {
         if (payload.title !== undefined) form.title = payload.title;
@@ -66,7 +80,156 @@ const formSlice = createSlice({
           form.description = payload.description;
       }
     },
+
+    // Add blank question
+    addBlankQuestion: (state) => {
+      const newQuestion = {
+        id: uuidv4(),
+        text: "Untitled Question",
+        required: false,
+        options: [
+          {
+            id: uuidv4(),
+            text: "Option 1",
+            isCorrect: false,
+          },
+        ],
+      };
+      if (state.singleFormData.data?.questions) {
+        state.singleFormData.data.questions.push(newQuestion);
+      } else if (state.singleFormData.data) {
+        state.singleFormData.data.questions = [newQuestion];
+      }
+    },
+
+    // Add a blank option to a question
+    addBlankOption: (
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          questionId: number | string;
+        };
+      }
+    ) => {
+      const question = state.singleFormData.data?.questions?.find(
+        (q) => q.id === payload.questionId
+      );
+      if (question) {
+        const newOption = {
+          id: uuidv4(),
+          text: "",
+          isCorrect: false,
+        };
+        question.options.push(newOption);
+      }
+    },
+
+    // ✅ Update question text or required field (fully typed)
+    changeQuestionValue: (
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          questionId: string | number;
+          field: "text" | "required";
+          value: string | boolean;
+        };
+      }
+    ) => {
+      const question = state.singleFormData.data?.questions?.find(
+        (q) => q.id === payload.questionId
+      );
+
+      if (question) {
+        if (payload.field === "text" && typeof payload.value === "string") {
+          question.text = payload.value;
+        } else if (
+          payload.field === "required" &&
+          typeof payload.value === "boolean"
+        ) {
+          question.required = payload.value;
+        }
+      }
+    },
+
+    // ✅ Update option text or isCorrect (fully typed)
+    changeOptionValue: (
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          questionId: string | number;
+          optionId: string | number;
+          field: "text" | "isCorrect";
+          value: string | boolean;
+        };
+      }
+    ) => {
+      const question = state.singleFormData.data?.questions?.find(
+        (q) => q.id === payload.questionId
+      );
+      const option = question?.options.find(
+        (opt) => opt.id === payload.optionId
+      );
+
+      if (option) {
+        if (payload.field === "text" && typeof payload.value === "string") {
+          option.text = payload.value;
+        } else if (
+          payload.field === "isCorrect" &&
+          typeof payload.value === "boolean"
+        ) {
+          option.isCorrect = payload.value;
+        }
+      }
+    },
+
+    // Delete a question
+    deleteQuestion: (
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          questionId: number | string;
+        };
+      }
+    ) => {
+      if (state.singleFormData.data?.questions) {
+        state.singleFormData.data.questions =
+          state.singleFormData.data.questions.filter(
+            (q) => q.id !== payload.questionId
+          );
+      }
+    },
+
+    // Delete an option from a question
+    deleteOption: (
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          questionId: number | string;
+          optionId: number | string;
+        };
+      }
+    ) => {
+      const question = state.singleFormData.data?.questions?.find(
+        (q) => q.id === payload.questionId
+      );
+      if (question?.options) {
+        question.options = question.options.filter(
+          (opt) => opt.id !== payload.optionId
+        );
+      }
+    },
   },
+
   extraReducers: (builder) => {
     builder
       // Create form
@@ -177,5 +340,14 @@ const formSlice = createSlice({
   },
 });
 
-export const { changeFormValueAction, setSingleFormData } = formSlice.actions;
+export const {
+  changeFormValueAction,
+  setSingleFormData,
+  addBlankQuestion,
+  addBlankOption,
+  changeQuestionValue,
+  changeOptionValue,
+  deleteOption,
+  deleteQuestion,
+} = formSlice.actions;
 export default formSlice.reducer;

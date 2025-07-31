@@ -6,13 +6,13 @@ export interface CommonStateType {
 }
 
 export interface Option {
-  id: number;
+  id: number | string;
   text: string;
   isCorrect: boolean;
 }
 
 export interface Question {
-  id: number;
+  id: number | string;
   text: string;
   required: boolean;
   options: Option[];

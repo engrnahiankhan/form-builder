@@ -22,7 +22,7 @@ const PrivateLayout = () => {
           </div>
           <UserSettings />
         </header>
-        <main className="overflow-hidden p-4 lg:p-6 xl:p-8 min-h-dvh">
+        <main className="overflow-hidden p-4 lg:p-6 xl:p-8 min-h-screen">
           <Outlet />
         </main>
       </SidebarInset>

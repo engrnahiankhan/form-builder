@@ -71,8 +71,8 @@ const CreateForm = () => {
   }
 
   return (
-    <>
-      <Card className="p-4 mb-4">
+    <div className="flex flex-col items-center justify-center gap-2 w-full">
+      <Card className="p-4 w-full">
         <CardTitle className="flex items-center justify-between">
           Create Form
           {updateForm.isLoading ? (
@@ -88,7 +88,7 @@ const CreateForm = () => {
           </Button>
         </CardTitle>
       </Card>
-      <Card className="p-4">
+      <Card className="p-4 w-full">
         {data && (
           <div className="flex flex-col space-y-2 mt-4">
             <Input
@@ -105,7 +105,7 @@ const CreateForm = () => {
           </div>
         )}
       </Card>
-    </>
+    </div>
   );
 };
 
