@@ -38,6 +38,7 @@ const initialState: InitialFormStateType = {
     isLoading: false,
     message: "",
   },
+  is_preview: false,
 };
 
 const formSlice = createSlice({
@@ -50,7 +51,10 @@ const formSlice = createSlice({
         (form) => form.id === payload
       );
       if (foundForm) {
-        state.singleFormData.data = foundForm;
+        state.singleFormData.data = {
+          ...foundForm,
+          is_preview: false,
+        };
         state.singleFormData.message = "Single form set from list";
         state.singleFormData.isError = false;
       } else {
@@ -58,6 +62,10 @@ const formSlice = createSlice({
         state.singleFormData.message = "Form not found";
         state.singleFormData.isError = true;
       }
+    },
+
+    setPreviewMode: (state, { payload }) => {
+      state.is_preview = payload;
     },
 
     // Update form title or description
@@ -288,7 +296,10 @@ const formSlice = createSlice({
         state.singleFormData.isError = false;
         state.singleFormData.message = "Form fetched successfully";
 
-        state.singleFormData.data = payload;
+        state.singleFormData.data = {
+          ...(payload.data || payload),
+          is_preview: false,
+        };
       })
       .addCase(getFormByIdAction.rejected, (state, action) => {
         state.singleFormData.isLoading = false;
@@ -349,5 +360,6 @@ export const {
   changeOptionValue,
   deleteOption,
   deleteQuestion,
+  setPreviewMode,
 } = formSlice.actions;
 export default formSlice.reducer;

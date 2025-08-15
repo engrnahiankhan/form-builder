@@ -25,6 +25,7 @@ export interface FormDataType {
   createdAt?: Date;
   updatedAt?: Date;
   questions?: Question[];
+  is_preview: boolean;
 }
 
 export type AllFormDataType = CommonStateType & {
@@ -42,4 +43,5 @@ export type InitialFormStateType = {
   createForm: CommonStateType;
   updateForm: CommonStateType;
   deleteForm: CommonStateType;
+  is_preview: boolean;
 };
