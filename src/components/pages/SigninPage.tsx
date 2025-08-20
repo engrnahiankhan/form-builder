@@ -1,13 +1,46 @@
-import { useDispatch } from "react-redux";
-import { setClick } from "../../store/slices/inSlice";
 import { Button } from "../ui/button";
 import { ArrowRight, Shield } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { loginUser } from "@/store/actions/userAction";
+import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
+import { toast } from "sonner";
 
+interface SigninFormDataType {
+  email: string;
+  password: string;
+}
 const SigninPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const { error } = useAppSelector((state) => state.user);
+
+  const [formData, setFormData] = useState<SigninFormDataType>({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Form Data:", formData);
+    const { email, password } = formData;
+    const signinPromise = dispatch(loginUser({ email, password })).unwrap;
+
+    toast.promise(signinPromise, {
+      loading: "Signin your account...",
+      success: "Account signin successfully!",
+      error,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4">
@@ -28,17 +61,29 @@ const SigninPage = () => {
           </div>
 
           {/* Form */}
-          <div className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Email Field */}
             <div className="space-y-1.5">
               <Label>Email Address</Label>
-              <Input type="email" placeholder="Enter your email address" />
+              <Input
+                name="email"
+                type="email"
+                placeholder="Enter your email address"
+                value={formData.email}
+                onChange={handleChange}
+              />
             </div>
 
             {/* Password Field */}
             <div className="space-y-1.5">
               <Label>Password</Label>
-              <Input type="password" placeholder="Enter your strong password" />
+              <Input
+                name="password"
+                type="password"
+                placeholder="Enter your strong password"
+                value={formData.password}
+                onChange={handleChange}
+              />
             </div>
 
             <Label>
@@ -51,13 +96,11 @@ const SigninPage = () => {
             </Label>
 
             {/* Submit Button */}
-            <Button
-              className="w-full py-5"
-              onClick={() => dispatch(setClick(true))}>
+            <Button className="w-full py-5" type="submit">
               <span>SignIn</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
-          </div>
+          </form>
         </div>
 
         {/* Security Badge */}

@@ -7,8 +7,8 @@ type PublicRouteProps = {
 };
 
 const PublicRoute = ({ children }: PublicRouteProps) => {
-  const isClick = useAppSelector((state) => state.test.is_click);
-  return !isClick ? children : <Navigate to="/" />;
+  const { user } = useAppSelector((state) => state.user);
+  return !user ? children : <Navigate to="/" />;
 };
 
 export default PublicRoute;

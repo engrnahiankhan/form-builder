@@ -1,3 +1,5 @@
+import { User } from "firebase/auth";
+
 // COMMON TYPE
 export interface CommonStateType {
   isLoading: boolean;
@@ -45,3 +47,20 @@ export type InitialFormStateType = {
   deleteForm: CommonStateType;
   is_preview: boolean;
 };
+
+// User Types
+export interface UserState {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface UpdateProfileData {
+  displayName: string;
+  photoURL: string;
+}

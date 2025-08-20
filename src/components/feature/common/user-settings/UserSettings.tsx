@@ -8,12 +8,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Settings, LogOut, Bell } from "lucide-react";
-import { setClick } from "@/store/slices/inSlice";
 import { useAppDispatch } from "@/hooks/storeHooks";
+import { logoutUser } from "@/store/actions/userAction";
 
 const UserSettings = () => {
   const dispatch = useAppDispatch();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="cursor-pointer">
@@ -45,7 +44,7 @@ const UserSettings = () => {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          onClick={() => dispatch(setClick(false))}
+          onClick={() => dispatch(logoutUser())}
           className="cursor-pointer text-red-600">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
