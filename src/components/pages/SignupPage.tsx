@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { ArrowRight, Shield } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
@@ -27,7 +27,7 @@ const SignupPage = () => {
     email: "",
     password: "",
   });
-
+  const [showPassword, setShowPassword] = useState(false);
   const [inputErrors, setInputErrors] = useState<InputErrorStateType>({});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -120,13 +120,21 @@ const SignupPage = () => {
             {/* Password Field */}
             <div className="space-y-1.5">
               <Label>Password</Label>
-              <Input
-                name="password"
-                type="password"
-                placeholder="Enter your strong password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+              <div className="relative">
+                <Input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your strong password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors">
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
               {inputErrors.password && (
                 <Label className="text-destructive">
                   {inputErrors.password}
