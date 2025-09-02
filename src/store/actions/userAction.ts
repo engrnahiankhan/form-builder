@@ -12,6 +12,7 @@ import {
   updateProfile,
   User,
   UserCredential,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { setAuthInitialized } from "../slices/userSlice";
 import app from "@/config/firebase.config";
@@ -116,6 +117,20 @@ export const updateUserProfile = createAsyncThunk<
     }
   }
 );
+
+export const resetPassword = createAsyncThunk<
+  void,
+  string,
+  { rejectValue: string }
+>("user/resetPassword", async (email, { rejectWithValue }) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+  } catch (error: any) {
+    return rejectWithValue(
+      error.message || "Failed to send password reset email"
+    );
+  }
+});
 
 // Authentication state listener thunk
 export const initializeAuth = createAsyncThunk<

@@ -7,6 +7,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { googleLogin, loginUser } from "@/store/actions/userAction";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { toast } from "sonner";
+import ForgotPassword from "../shared/ForgotPassword";
 
 interface SigninFormDataType {
   email: string;
@@ -28,6 +29,8 @@ const SigninPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [inputErrors, setInputErrors] = useState<InputErrorStateType>({});
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -187,7 +190,14 @@ const SigninPage = () => {
             </button>
           </div>
 
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex flex-col space-y-2 items-center justify-center">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              type="button"
+              className="text-primary text-sm hover:underline cursor-pointer">
+              Forgot password?
+            </button>
+
             <Label>
               Don't have an account?{" "}
               <Link
@@ -207,6 +217,11 @@ const SigninPage = () => {
           </div>
         </div>
       </div>
+
+      <ForgotPassword
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

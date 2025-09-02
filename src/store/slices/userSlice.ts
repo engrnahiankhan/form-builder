@@ -8,6 +8,7 @@ import {
   initializeAuth,
   loginUser,
   logoutUser,
+  resetPassword,
   updateUserProfile,
 } from "../actions/userAction";
 import { User } from "firebase/auth";
@@ -133,6 +134,20 @@ const userSlice = createSlice({
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update profile";
+      })
+
+      // Reset user password
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to reset password";
       })
 
       // Initialize auth
