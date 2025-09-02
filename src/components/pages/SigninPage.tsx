@@ -4,7 +4,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { loginUser } from "@/store/actions/userAction";
+import { googleLogin, loginUser } from "@/store/actions/userAction";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { toast } from "sonner";
 
@@ -56,6 +56,16 @@ const SigninPage = () => {
     if (Object.keys(newErrors).length > 0) return;
 
     const signinPromise = dispatch(loginUser({ email, password })).unwrap;
+
+    toast.promise(signinPromise, {
+      loading: "Signin your account...",
+      success: "Account signin successfully!",
+      error,
+    });
+  };
+
+  const handleLoginGoogle = () => {
+    const signinPromise = dispatch(googleLogin()).unwrap();
 
     toast.promise(signinPromise, {
       loading: "Signin your account...",
@@ -139,6 +149,7 @@ const SigninPage = () => {
           {/* Social Sign In Buttons */}
           <div className="grid grid-cols-2 gap-4">
             <button
+              onClick={handleLoginGoogle}
               type="button"
               className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
