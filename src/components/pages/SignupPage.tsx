@@ -150,7 +150,7 @@ const SignupPage = () => {
           <div className="relative my-6">
             <hr className="border-gray-300" />
             <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 text-sm font-semibold text-gray-600">
-              Or Sign in with
+              Or Sign up with
             </span>
           </div>
 
