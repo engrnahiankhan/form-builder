@@ -13,6 +13,12 @@ interface SignupFormDataType {
   email: string;
   password: string;
 }
+
+interface InputErrorStateType {
+  fullName?: string;
+  email?: string;
+  password?: string;
+}
 const SignupPage = () => {
   const dispatch = useAppDispatch();
   const { error } = useAppSelector((state) => state.user);
@@ -22,18 +28,34 @@ const SignupPage = () => {
     password: "",
   });
 
+  const [inputErrors, setInputErrors] = useState<InputErrorStateType>({});
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    setInputErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form Data:", formData);
-    const { email, password } = formData;
+    const { fullName, email, password } = formData;
+
+    const newErrors: InputErrorStateType = {};
+    if (!fullName.trim()) newErrors.fullName = "Fullname is required";
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!password.trim()) newErrors.password = "Password is required";
+
+    setInputErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
 
     const signupPromise = dispatch(createNewUser({ email, password })).unwrap;
 
@@ -73,6 +95,11 @@ const SignupPage = () => {
                 value={formData.fullName}
                 onChange={handleChange}
               />
+              {inputErrors.fullName && (
+                <Label className="text-destructive">
+                  {inputErrors.fullName}
+                </Label>
+              )}
             </div>
 
             {/* Email Field */}
@@ -85,6 +112,9 @@ const SignupPage = () => {
                 value={formData.email}
                 onChange={handleChange}
               />
+              {inputErrors.email && (
+                <Label className="text-destructive">{inputErrors.email}</Label>
+              )}
             </div>
 
             {/* Password Field */}
@@ -97,6 +127,11 @@ const SignupPage = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
+              {inputErrors.password && (
+                <Label className="text-destructive">
+                  {inputErrors.password}
+                </Label>
+              )}
             </div>
 
             <Label>

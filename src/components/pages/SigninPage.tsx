@@ -12,6 +12,12 @@ interface SigninFormDataType {
   email: string;
   password: string;
 }
+
+interface InputErrorStateType {
+  email?: string;
+  password?: string;
+}
+
 const SigninPage = () => {
   const dispatch = useAppDispatch();
   const { error } = useAppSelector((state) => state.user);
@@ -21,11 +27,18 @@ const SigninPage = () => {
     password: "",
   });
 
+  const [inputErrors, setInputErrors] = useState<InputErrorStateType>({});
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+
+    setInputErrors((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   };
 
@@ -33,6 +46,15 @@ const SigninPage = () => {
     e.preventDefault();
     console.log("Form Data:", formData);
     const { email, password } = formData;
+
+    const newErrors: InputErrorStateType = {};
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!password.trim()) newErrors.password = "Password is required";
+
+    setInputErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
     const signinPromise = dispatch(loginUser({ email, password })).unwrap;
 
     toast.promise(signinPromise, {
@@ -72,6 +94,9 @@ const SigninPage = () => {
                 value={formData.email}
                 onChange={handleChange}
               />
+              {inputErrors.email && (
+                <Label className="text-destructive">{inputErrors.email}</Label>
+              )}
             </div>
 
             {/* Password Field */}
@@ -80,10 +105,15 @@ const SigninPage = () => {
               <Input
                 name="password"
                 type="password"
-                placeholder="Enter your strong password"
+                placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
               />
+              {inputErrors.password && (
+                <Label className="text-destructive">
+                  {inputErrors.password}
+                </Label>
+              )}
             </div>
 
             <Label>
