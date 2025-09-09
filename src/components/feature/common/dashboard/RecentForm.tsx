@@ -11,10 +11,13 @@ const RecentForm = () => {
   const {
     formsData: { data, isError, isLoading, message },
   } = useAppSelector((state) => state.form);
+  const { user } = useAppSelector((state) => state.user);
 
   const handleDeleteForm = (id: number) => {
     if (window.confirm("Are you sure you want to delete this form?")) {
-      dispatch(deleteFormAction(id));
+      if (user?.email) {
+        dispatch(deleteFormAction({ email: user.email, id }));
+      }
     }
   };
 

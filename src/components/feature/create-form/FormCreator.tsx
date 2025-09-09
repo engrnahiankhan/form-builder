@@ -1,5 +1,5 @@
 import { LoaderOne } from "@/components/ui/loader";
-import { useAppDispatch } from "@/hooks/storeHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { createFormAction } from "@/store/actions/formAction";
 import { Ban } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,14 +9,19 @@ const FormCreator = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState(false);
+  const { user } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     const createNewForm = async () => {
+      if (!user?.email) return;
       try {
         const resultAction = await dispatch(
           createFormAction({
-            title: "Untitled Form",
-            description: "",
+            email: user.email,
+            formData: {
+              title: "Untitled Form",
+              description: "",
+            },
           })
         );
 
@@ -34,7 +39,7 @@ const FormCreator = () => {
     };
 
     createNewForm();
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, user?.email]);
 
   if (error) {
     return (

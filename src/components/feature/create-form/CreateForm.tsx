@@ -23,6 +23,7 @@ const CreateForm = () => {
     updateForm,
     singleFormData: { data, isError, isLoading, message },
   } = useAppSelector((state) => state.form);
+  const { user } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (paramsId && formsData.data.length) {
@@ -31,10 +32,12 @@ const CreateForm = () => {
   }, [paramsId, formsData.data, dispatch]);
 
   useEffect(() => {
-    if (data) {
-      dispatch(updateFormAction({ id: data.id, formData: data }));
+    if (data && user?.email) {
+      dispatch(
+        updateFormAction({ email: user.email, id: data.id, formData: data })
+      );
     }
-  }, [data, dispatch]);
+  }, [data, user?.email, dispatch]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(changeFormValueAction({ id: paramsId, title: e.target.value }));

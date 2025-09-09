@@ -18,6 +18,7 @@ const initialState: UserState = {
   user: null,
   loading: true,
   error: null,
+  authInitialized: false,
 };
 
 // User slice
@@ -41,6 +42,7 @@ const userSlice = createSlice({
       state.error = null;
     },
     setAuthInitialized: (state) => {
+      state.authInitialized = true;
       state.loading = false;
     },
   },
@@ -153,10 +155,12 @@ const userSlice = createSlice({
       // Initialize auth
       .addCase(initializeAuth.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.authInitialized = true;
         state.loading = false;
         state.error = null;
       })
       .addCase(initializeAuth.rejected, (state, action) => {
+        state.authInitialized = true;
         state.loading = false;
         state.error = action.payload || "Failed to initialize auth";
       });

@@ -11,45 +11,57 @@ interface FormType {
 
 export const createFormAction = createAsyncThunk(
   "form/createForm",
-  async (formData: FormType) => {
-    const url = baseUrl + "/create";
+  async ({ email, formData }: { email: string; formData: FormType }) => {
+    const url = `${baseUrl}/create/${email}`;
     const res = await axios.post(url, formData);
     return res.data;
   }
 );
 
+// GET /form/v0/all/:email
 export const getAllFormDataAction = createAsyncThunk(
   "form/getAllFormData",
-  async () => {
-    const url = baseUrl + "/all";
+  async (email: string) => {
+    const url = baseUrl + `/all/${email}`;
     const res = await axios.get(url);
     return res.data;
   }
 );
 
+// GET /form/v0/:email/:id
 export const getFormByIdAction = createAsyncThunk(
   "form/getFormDataById",
-  async (id: string) => {
-    const url = baseUrl + `/${id}`;
+  async ({ email, id }: { email: string; id: number }) => {
+    const url = baseUrl + `/${email}/${id}`;
     const res = await axios.get(url);
     return res.data;
   }
 );
 
+// PUT /form/v0/update/:email/:id
 export const updateFormAction = createAsyncThunk(
   "form/updateForm",
-  async ({ id, formData }: { id: number; formData: Partial<FormType> }) => {
-    const url = baseUrl + `/update/${id}`;
+  async ({
+    email,
+    id,
+    formData,
+  }: {
+    email: string;
+    id: number;
+    formData: Partial<FormType>;
+  }) => {
+    const url = baseUrl + `/update/${email}/${id}`;
     const res = await axios.put(url, formData);
     return res.data;
   }
 );
 
+// DELETE /form/v0/delete/:email/:id
 export const deleteFormAction = createAsyncThunk(
   "form/deleteForm",
-  async (id: number) => {
-    const url = baseUrl + `/delete/${id}`;
+  async ({ email, id }: { email: string; id: number }) => {
+    const url = baseUrl + `/delete/${email}/${id}`;
     const res = await axios.delete(url);
-    return res.data;
+    return { ...res.data, id };
   }
 );

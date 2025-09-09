@@ -337,9 +337,9 @@ const formSlice = createSlice({
         state.deleteForm.isError = false;
         state.deleteForm.message = "Form deleted successfully";
 
-        const pathId = action.meta.arg;
+        const deletedId = action.payload.id;
         state.formsData.data = state.formsData.data.filter(
-          (form) => form.id !== Number(pathId)
+          (form) => form.id !== deletedId
         );
       })
       .addCase(deleteFormAction.rejected, (state, action) => {
