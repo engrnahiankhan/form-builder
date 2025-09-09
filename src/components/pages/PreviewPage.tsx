@@ -29,8 +29,8 @@ const PreviewPage = () => {
       <div className="flex flex-col space-y-6 w-full">
         <Card className="p-6 w-full border-l-8 border-l-green-600">
           <div className="flex flex-col space-y-4">
-            <Label>{data?.title}</Label>
-            <Label>{data?.description}</Label>
+            <Label className="text-2xl font-semibold">{data?.title}</Label>
+            <Label className="font-medium text-xl">{data?.description}</Label>
           </div>
         </Card>
 
@@ -42,7 +42,7 @@ const PreviewPage = () => {
               className="p-6 w-full border-l-8 border-l-primary">
               <div className="space-y-8">
                 <div className="flex items-baseline">
-                  <Label>{que.text}</Label>
+                  <Label className="text-base font-semibold">{que.text}</Label>
                   {que.required && (
                     <Asterisk size={14} className="text-destructive" />
                   )}
@@ -67,7 +67,7 @@ const PreviewPage = () => {
                         }
                       />
 
-                      <Label>{opt.text}</Label>
+                      <Label className="font-medium">{opt.text}</Label>
                     </div>
                   ))}
                 </RadioGroup>

@@ -95,13 +95,13 @@ const FormBuilderPage = () => {
                   value={data?.title}
                   onChange={handleTitleChange}
                   placeholder="Untitled form"
-                  className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all"
+                  className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all !text-2xl font-semibold"
                 />
                 <Textarea
                   value={data?.description}
                   onChange={handleDescriptionChange}
                   placeholder="Form Description"
-                  className="min-h-[20px] outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all"
+                  className="min-h-[20px] outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all font-medium !text-xl"
                 />
               </div>
             </Card>
@@ -125,7 +125,7 @@ const FormBuilderPage = () => {
                         )
                       }
                       placeholder="Untitled Question"
-                      className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all"
+                      className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all !text-base font-semibold"
                     />
 
                     <RadioGroup
@@ -161,7 +161,7 @@ const FormBuilderPage = () => {
                                 })
                               )
                             }
-                            className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all"
+                            className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all font-medium"
                           />
 
                           {que.options.length > 1 && optIndex !== 0 && (
