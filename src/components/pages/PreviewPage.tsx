@@ -1,3 +1,5 @@
+"use client";
+
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { Card } from "../ui/card";
 import { Label } from "../ui/label";
@@ -55,16 +57,40 @@ const PreviewPage = () => {
                         value={String(opt.id)}
                         id={String(opt.id)}
                         checked={opt.isCorrect}
-                        onClick={() =>
-                          dispatch(
-                            changeOptionValue({
-                              questionId: que.id,
-                              optionId: opt.id,
-                              field: "isCorrect",
-                              value: true,
-                            })
-                          )
-                        }
+                        onClick={() => {
+                          if (opt.isCorrect) {
+                            dispatch(
+                              changeOptionValue({
+                                questionId: que.id,
+                                optionId: opt.id,
+                                field: "isCorrect",
+                                value: false,
+                              })
+                            );
+                          } else {
+                            que.options.forEach((option) => {
+                              if (option.isCorrect) {
+                                dispatch(
+                                  changeOptionValue({
+                                    questionId: que.id,
+                                    optionId: option.id,
+                                    field: "isCorrect",
+                                    value: false,
+                                  })
+                                );
+                              }
+                            });
+
+                            dispatch(
+                              changeOptionValue({
+                                questionId: que.id,
+                                optionId: opt.id,
+                                field: "isCorrect",
+                                value: true,
+                              })
+                            );
+                          }
+                        }}
                       />
 
                       <Label className="font-medium">{opt.text}</Label>
