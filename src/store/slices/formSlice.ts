@@ -125,9 +125,11 @@ const formSlice = createSlice({
         (q) => q.id === payload.questionId
       );
       if (question) {
+        const optionNumber = question.options.length + 1;
+
         const newOption = {
           id: uuidv4(),
-          text: "",
+          text: `Option ${optionNumber}`,
           isCorrect: false,
         };
         question.options.push(newOption);

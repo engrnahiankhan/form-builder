@@ -1,4 +1,4 @@
-import { Eye, Image, PlusCircle, Trash2, Type, X } from "lucide-react";
+import { Eye, Image, PlusCircle, Trash2, Type, Users, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -73,10 +73,16 @@ const FormBuilderPage = () => {
         <Card className="p-4 w-full">
           <CardTitle className="flex items-center justify-between">
             Create Form
-            <Button onClick={handleOpenPreview} variant="soft">
-              <Eye />
-              Preview
-            </Button>
+            <div className="flex items-center space-x-3">
+              <Button onClick={handleOpenPreview} variant="minimal">
+                <Eye />
+                Preview
+              </Button>
+              <Button variant="soft">
+                <Users />
+                Publish
+              </Button>
+            </div>
           </CardTitle>
         </Card>
 
