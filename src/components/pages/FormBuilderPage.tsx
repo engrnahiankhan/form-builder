@@ -98,6 +98,10 @@ const FormBuilderPage = () => {
     );
   };
 
+  const handleDeleteQuestion = (id: number | string) => {
+    dispatch(deleteQuestion({ questionId: id }));
+  };
+
   const handleOpenPreview = () => {
     window.open(`/create-form/${paramsId}/preview`, "_blank");
   };
@@ -266,11 +270,9 @@ const FormBuilderPage = () => {
                           </div>
 
                           <Button
+                            onClick={() => handleDeleteQuestion(que.id)}
                             size="icon"
-                            variant="destructive"
-                            onClick={() =>
-                              dispatch(deleteQuestion({ questionId: que.id }))
-                            }>
+                            variant="destructive">
                             <Trash2 />
                           </Button>
                         </div>
