@@ -223,7 +223,7 @@ const FormBuilderPage = () => {
               ))}
           </div>
 
-          {/* Toolbar */}
+          {/* Action Toolbar */}
           <Card className="max-w-[7%] w-full bg-primary min-h-fit">
             <div className="flex flex-col items-center gap-6">
               <Button
