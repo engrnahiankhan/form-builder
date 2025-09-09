@@ -1,4 +1,8 @@
-import { Eye, Image, PlusCircle, Trash2, Type, Users, X } from "lucide-react";
+"use client";
+
+import type React from "react";
+
+import { Eye, PlusCircle, Trash2, Users, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -6,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "../ui/textarea";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   changeFormValueAction,
   setSingleFormData,
@@ -31,6 +35,8 @@ const FormBuilderPage = () => {
   } = useAppSelector((state) => state.form);
   const { user } = useAppSelector((state) => state.user);
 
+  const [activeSection, setActiveSection] = useState<"title" | number>("title");
+
   useEffect(() => {
     if (paramsId && formsData.data.length) {
       dispatch(setSingleFormData(paramsId));
@@ -50,6 +56,14 @@ const FormBuilderPage = () => {
     };
   }, [data, user?.email, dispatch]);
 
+  const handleTitleClick = () => {
+    setActiveSection("title");
+  };
+
+  const handleQuestionClick = (questionId: number) => {
+    setActiveSection(questionId);
+  };
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(changeFormValueAction({ id: paramsId, title: e.target.value }));
   };
@@ -65,6 +79,15 @@ const FormBuilderPage = () => {
   const handleOpenPreview = () => {
     window.open(`/create-form/${paramsId}/preview`, "_blank");
   };
+
+  const Toolbar = () => (
+    <Button
+      onClick={() => dispatch(addBlankQuestion())}
+      size="default"
+      variant="brutalist">
+      <PlusCircle className="w-5 h-5" />
+    </Button>
+  );
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -86,160 +109,152 @@ const FormBuilderPage = () => {
           </CardTitle>
         </Card>
 
-        <div className="flex items-start gap-4">
-          <div className="space-y-6 max-w-[93%] w-full">
-            {/* Title and desc  */}
-            <Card className="p-6 w-full border-l-8 border-l-green-600">
-              <div className="flex flex-col space-y-4">
-                <Input
-                  value={data?.title}
-                  onChange={handleTitleChange}
-                  placeholder="Untitled form"
-                  className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all !text-2xl font-semibold"
-                />
-                <Textarea
-                  value={data?.description}
-                  onChange={handleDescriptionChange}
-                  placeholder="Form Description"
-                  className="min-h-[20px] outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all font-medium !text-xl"
-                />
-              </div>
-            </Card>
+        <div className="space-y-6">
+          {/* Title and Description Section */}
+          <div className="flex gap-2 items-start">
+            <div className="flex-1">
+              <Card
+                className="p-6 w-full border-l-8 border-l-green-600 hover:shadow-md transition-shadow"
+                onClick={handleTitleClick}>
+                <div className="flex flex-col space-y-4">
+                  <Input
+                    value={data?.title}
+                    onChange={handleTitleChange}
+                    placeholder="Untitled form"
+                    className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all !text-2xl font-semibold"
+                  />
+                  <Textarea
+                    value={data?.description}
+                    onChange={handleDescriptionChange}
+                    placeholder="Form Description"
+                    className="min-h-[20px] outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all font-medium !text-xl"
+                  />
+                </div>
+              </Card>
+            </div>
+            {activeSection === "title" && <Toolbar />}
+          </div>
 
-            {/* Question section  */}
-            {data &&
-              data.questions?.map((que) => (
-                <Card
-                  key={que.id}
-                  className="p-6 w-full border-l-8 border-l-primary">
-                  <div className="space-y-8">
-                    <Input
-                      value={que.text}
-                      onChange={(e) =>
-                        dispatch(
-                          changeQuestionValue({
-                            questionId: que.id,
-                            field: "text",
-                            value: e.target.value,
-                          })
-                        )
-                      }
-                      placeholder="Untitled Question"
-                      className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all !text-base font-semibold"
-                    />
+          {/* Question Section */}
+          {data &&
+            data.questions?.map((que) => (
+              <div key={que.id} className="flex gap-2 items-start">
+                <div className="flex-1">
+                  <Card
+                    className="p-6 w-full border-l-8 border-l-primary hover:shadow-md transition-shadow"
+                    onClick={() => handleQuestionClick(que.id)}>
+                    <div className="space-y-8">
+                      <Input
+                        value={que.text}
+                        onChange={(e) =>
+                          dispatch(
+                            changeQuestionValue({
+                              questionId: que.id,
+                              field: "text",
+                              value: e.target.value,
+                            })
+                          )
+                        }
+                        placeholder="Untitled Question"
+                        className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all !text-base font-semibold"
+                      />
 
-                    <RadioGroup
-                      defaultValue="comfortable"
-                      disabled={!is_preview}>
-                      {que.options.map((opt, optIndex) => (
-                        <div key={opt.id} className="flex items-center gap-3">
-                          <RadioGroupItem
-                            value={String(opt.id)}
-                            id={String(opt.id)}
-                            checked={opt.isCorrect}
-                            onClick={() =>
-                              dispatch(
-                                changeOptionValue({
-                                  questionId: que.id,
-                                  optionId: opt.id,
-                                  field: "isCorrect",
-                                  value: true,
-                                })
-                              )
-                            }
-                          />
-
-                          <Input
-                            value={opt.text}
-                            onChange={(e) =>
-                              dispatch(
-                                changeOptionValue({
-                                  questionId: que.id,
-                                  optionId: opt.id,
-                                  field: "text",
-                                  value: e.target.value,
-                                })
-                              )
-                            }
-                            className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all font-medium"
-                          />
-
-                          {que.options.length > 1 && optIndex !== 0 && (
-                            <Button
+                      <RadioGroup
+                        defaultValue="comfortable"
+                        disabled={!is_preview}>
+                        {que.options.map((opt, optIndex) => (
+                          <div key={opt.id} className="flex items-center gap-3">
+                            <RadioGroupItem
+                              value={String(opt.id)}
+                              id={String(opt.id)}
+                              checked={opt.isCorrect}
                               onClick={() =>
                                 dispatch(
-                                  deleteOption({
+                                  changeOptionValue({
                                     questionId: que.id,
                                     optionId: opt.id,
+                                    field: "isCorrect",
+                                    value: true,
                                   })
                                 )
                               }
-                              variant="ghost">
-                              <X />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </RadioGroup>
+                            />
 
-                    <div className="flex items-center justify-between">
-                      <Button
-                        onClick={() =>
-                          dispatch(addBlankOption({ questionId: que.id }))
-                        }>
-                        Add Option
-                      </Button>
+                            <Input
+                              value={opt.text}
+                              onChange={(e) =>
+                                dispatch(
+                                  changeOptionValue({
+                                    questionId: que.id,
+                                    optionId: opt.id,
+                                    field: "text",
+                                    value: e.target.value,
+                                  })
+                                )
+                              }
+                              className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all font-medium"
+                            />
 
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center space-x-2 border p-2 rounded-lg">
-                          <span>Required</span>
+                            {que.options.length > 1 && optIndex !== 0 && (
+                              <Button
+                                onClick={() =>
+                                  dispatch(
+                                    deleteOption({
+                                      questionId: que.id,
+                                      optionId: opt.id,
+                                    })
+                                  )
+                                }
+                                variant="ghost">
+                                <X />
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                      </RadioGroup>
 
-                          <Switch
-                            checked={que.required}
-                            onCheckedChange={(checked) =>
-                              dispatch(
-                                changeQuestionValue({
-                                  questionId: que.id,
-                                  field: "required",
-                                  value: checked,
-                                })
-                              )
-                            }
-                          />
-                        </div>
-
+                      <div className="flex items-center justify-between">
                         <Button
-                          size="icon"
-                          variant="destructive"
                           onClick={() =>
-                            dispatch(deleteQuestion({ questionId: que.id }))
+                            dispatch(addBlankOption({ questionId: que.id }))
                           }>
-                          <Trash2 />
+                          Add Option
                         </Button>
+
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-2 border py-2 px-4 rounded-lg">
+                            <span>Required</span>
+
+                            <Switch
+                              checked={que.required}
+                              onCheckedChange={(checked) =>
+                                dispatch(
+                                  changeQuestionValue({
+                                    questionId: que.id,
+                                    field: "required",
+                                    value: checked,
+                                  })
+                                )
+                              }
+                            />
+                          </div>
+
+                          <Button
+                            size="icon"
+                            variant="destructive"
+                            onClick={() =>
+                              dispatch(deleteQuestion({ questionId: que.id }))
+                            }>
+                            <Trash2 />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
-          </div>
-
-          {/* Action Toolbar */}
-          <Card className="max-w-[7%] w-full bg-primary min-h-fit">
-            <div className="flex flex-col items-center gap-6">
-              <Button
-                onClick={() => dispatch(addBlankQuestion())}
-                size="icon"
-                variant="outline">
-                <PlusCircle />
-              </Button>
-              <Button size="icon" variant="outline">
-                <Type />
-              </Button>
-              <Button size="icon" variant="outline">
-                <Image />
-              </Button>
-            </div>
-          </Card>
+                  </Card>
+                </div>
+                {activeSection === que.id && <Toolbar />}
+              </div>
+            ))}
         </div>
       </div>
     </div>
