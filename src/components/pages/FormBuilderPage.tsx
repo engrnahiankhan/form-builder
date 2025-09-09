@@ -49,11 +49,16 @@ const FormBuilderPage = () => {
   }, [paramsId, formsData.data, dispatch]);
 
   useEffect(() => {
-    if (data && user?.email) {
-      dispatch(
-        updateFormAction({ email: user.email, id: data.id, formData: data })
-      );
-    }
+    const handler = setTimeout(() => {
+      if (data && user?.email) {
+        dispatch(
+          updateFormAction({ email: user.email, id: data.id, formData: data })
+        );
+      }
+    }, 600);
+    return () => {
+      clearTimeout(handler);
+    };
   }, [data, user?.email, dispatch]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
