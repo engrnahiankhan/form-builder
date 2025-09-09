@@ -7,40 +7,32 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Settings, LogOut, Bell } from "lucide-react";
-import { useAppDispatch } from "@/hooks/storeHooks";
+import { LogOut } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { logoutUser } from "@/store/actions/userAction";
 
 const UserSettings = () => {
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.user);
+  console.log("check use image:", user?.photoURL);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="cursor-pointer">
         <Avatar className="h-10 w-10 rounded-full overflow-hidden shadow">
-          <AvatarImage src="https://github.com/shadcn.png" alt="User Avatar" />
-          <AvatarFallback className="rounded-md">JD</AvatarFallback>
+          <AvatarImage
+            src={user?.photoURL || "https://github.com/shadcn.png"}
+            alt={user?.displayName || "User"}
+            className="object-cover"
+          />
+          <AvatarFallback className="rounded-full">
+            {user?.displayName?.charAt(0) || "U"}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem className="cursor-pointer">
-          <Bell className="mr-2 h-4 w-4" />
-          <span>Notifications</span>
-        </DropdownMenuItem>
-
+        <DropdownMenuLabel>{user?.displayName}</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
