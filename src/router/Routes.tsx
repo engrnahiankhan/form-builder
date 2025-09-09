@@ -8,6 +8,7 @@ import PublicErrorPage from "@/components/pages/PublicErrorPage";
 import FormBuilderPage from "@/components/pages/FormBuilderPage";
 import DashboardPage from "@/components/pages/DashboardPage";
 import FormCreator from "@/components/feature/create-form/FormCreator";
+import PreviewPage from "@/components/pages/PreviewPage";
 
 const Index = () => {
   const routes = createBrowserRouter([
@@ -30,6 +31,10 @@ const Index = () => {
         {
           path: "/create-form/:id",
           element: <FormBuilderPage />,
+        },
+        {
+          path: "/create-form/:id/preview",
+          element: <PreviewPage />,
         },
       ],
 
