@@ -263,7 +263,7 @@ function SidebarTrigger({
         toggleSidebar();
       }}
       {...props}>
-      {open ? <PanelRightClose /> : <PanelRightOpen />}
+      {open ? <PanelRightOpen /> : <PanelRightClose />}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
