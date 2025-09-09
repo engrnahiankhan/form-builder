@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "../ui/textarea";
 import { useAppDispatch, useAppSelector } from "@/hooks/storeHooks";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   changeFormValueAction,
   setSingleFormData,
@@ -35,7 +35,11 @@ const FormBuilderPage = () => {
   } = useAppSelector((state) => state.form);
   const { user } = useAppSelector((state) => state.user);
 
-  const [activeSection, setActiveSection] = useState<"title" | number>("title");
+  const [activeSection, setActiveSection] = useState<"title" | string | number>(
+    "title"
+  );
+  const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const prevQuestionCount = useRef(data?.questions?.length || 0);
 
   useEffect(() => {
     if (paramsId && formsData.data.length) {
@@ -56,11 +60,29 @@ const FormBuilderPage = () => {
     };
   }, [data, user?.email, dispatch]);
 
+  useEffect(() => {
+    if (data?.questions) {
+      const currentQuestionCount = data.questions.length;
+      if (currentQuestionCount > prevQuestionCount.current) {
+        const lastQuestion = data.questions[currentQuestionCount - 1];
+        const lastQuestionRef = questionRefs.current[String(lastQuestion.id)];
+        if (lastQuestionRef) {
+          lastQuestionRef.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          setActiveSection(lastQuestion.id);
+        }
+      }
+      prevQuestionCount.current = currentQuestionCount;
+    }
+  }, [data?.questions]);
+
   const handleTitleClick = () => {
     setActiveSection("title");
   };
 
-  const handleQuestionClick = (questionId: number) => {
+  const handleQuestionClick = (questionId: string | number) => {
     setActiveSection(questionId);
   };
 
@@ -81,18 +103,19 @@ const FormBuilderPage = () => {
   };
 
   const Toolbar = () => (
-    <Button
-      onClick={() => dispatch(addBlankQuestion())}
-      size="default"
-      variant="brutalist">
-      <PlusCircle className="w-5 h-5" />
-    </Button>
+    <div className="flex justify-center w-[10%]">
+      <Button
+        onClick={() => dispatch(addBlankQuestion())}
+        size="default"
+        variant="brutalist">
+        <PlusCircle className="w-5 h-5" />
+      </Button>
+    </div>
   );
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="space-y-6">
-        {/* Headline preview bar  */}
         <Card className="p-4 w-full">
           <CardTitle className="flex items-center justify-between">
             Create Form
@@ -110,9 +133,8 @@ const FormBuilderPage = () => {
         </Card>
 
         <div className="space-y-6">
-          {/* Title and Description Section */}
-          <div className="flex gap-2 items-start">
-            <div className="flex-1">
+          <div className="flex items-start">
+            <div className="w-[90%]">
               <Card
                 className="p-6 w-full border-l-8 border-l-green-600 hover:shadow-md transition-shadow"
                 onClick={handleTitleClick}>
@@ -135,11 +157,15 @@ const FormBuilderPage = () => {
             {activeSection === "title" && <Toolbar />}
           </div>
 
-          {/* Question Section */}
           {data &&
             data.questions?.map((que) => (
-              <div key={que.id} className="flex gap-2 items-start">
-                <div className="flex-1">
+              <div
+                key={que.id}
+                className="flex items-start"
+                ref={(el) => {
+                  questionRefs.current[String(que.id)] = el ?? null;
+                }}>
+                <div className="w-[90%]">
                   <Card
                     className="p-6 w-full border-l-8 border-l-primary hover:shadow-md transition-shadow"
                     onClick={() => handleQuestionClick(que.id)}>
@@ -162,7 +188,7 @@ const FormBuilderPage = () => {
                       <RadioGroup
                         defaultValue="comfortable"
                         disabled={!is_preview}>
-                        {que.options.map((opt, optIndex) => (
+                        {que.options.map((opt) => (
                           <div key={opt.id} className="flex items-center gap-3">
                             <RadioGroupItem
                               value={String(opt.id)}
@@ -195,7 +221,7 @@ const FormBuilderPage = () => {
                               className="outline-0 border-0 border-b-2 rounded-none focus-visible:ring-0 focus-visible:border-b-2 transition-all font-medium"
                             />
 
-                            {que.options.length > 1 && optIndex !== 0 && (
+                            {que.options.length > 1 && (
                               <Button
                                 onClick={() =>
                                   dispatch(
