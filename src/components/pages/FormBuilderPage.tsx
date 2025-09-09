@@ -38,6 +38,8 @@ const FormBuilderPage = () => {
   const [activeSection, setActiveSection] = useState<"title" | string | number>(
     "title"
   );
+  const [nextActiveSectionAfterDelete, setNextActiveSectionAfterDelete] =
+    useState<"title" | string | number | null>(null);
   const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const prevQuestionCount = useRef(data?.questions?.length || 0);
 
@@ -78,6 +80,25 @@ const FormBuilderPage = () => {
     }
   }, [data?.questions]);
 
+  useEffect(() => {
+    if (data?.questions && activeSection !== "title") {
+      const currentQuestionExists = data.questions.some(
+        (q) => q.id === activeSection
+      );
+
+      if (!currentQuestionExists) {
+        if (nextActiveSectionAfterDelete) {
+          setActiveSection(nextActiveSectionAfterDelete);
+          setNextActiveSectionAfterDelete(null);
+        } else if (data.questions.length > 0) {
+          setActiveSection(data.questions[0].id);
+        } else {
+          setActiveSection("title");
+        }
+      }
+    }
+  }, [data?.questions, activeSection, nextActiveSectionAfterDelete]);
+
   const handleTitleClick = () => {
     setActiveSection("title");
   };
@@ -99,6 +120,26 @@ const FormBuilderPage = () => {
   };
 
   const handleDeleteQuestion = (id: number | string) => {
+    if (data?.questions) {
+      const currentIndex = data.questions.findIndex((q) => q.id === id);
+
+      if (currentIndex !== -1) {
+        if (activeSection === id) {
+          if (data.questions.length > 1) {
+            if (currentIndex > 0) {
+              setNextActiveSectionAfterDelete(
+                data.questions[currentIndex - 1].id
+              );
+            } else {
+              setNextActiveSectionAfterDelete(data.questions[1].id);
+            }
+          } else {
+            setNextActiveSectionAfterDelete("title");
+          }
+        }
+      }
+    }
+
     dispatch(deleteQuestion({ questionId: id }));
   };
 
